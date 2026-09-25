@@ -16,29 +16,21 @@ int main () {
     for(int i = 1; i <= n; i++) {
         for(int j = 1; j <= n; j++) {
             cin >> d2[i][j];
+            d2[i][j] = __gcd(d2[i][j], k);
         }
     }
-    if(d2[1][1] != -1) {
-        dp[1][1][d2[1][1]] = 1;
-    }
+    dp[1][1][d2[1][1]] = 1;
     for(int i = 1; i <= n; i++) {
         for(int j = 1; j <= n; j++) {
             if(d2[i][j] == -1) continue;
-            if(i == 1 && j == 1) continue;
-            map <int, int> hdp;
-            if(i > 1 && d2[i - 1][j] != -1) {
-                for(auto    [nod, cnt] : dp[i - 1][j]) {
-                    int hnod = __gcd(nod, d2[i][j]);
-                    hdp[hnod] = (hdp[hnod] + cnt) % mod;
-                }
+            for(auto [nod, cnt] : dp[i - 1][j]) {
+                int hnod = __gcd(1LL * nod * d2[i][j], 1LL * k);
+                dp[i][j][hnod] = (dp[i][j][hnod] + cnt) % mod;
             }
-            if(j > 1 && d2[i][j - 1] != -1) {
-                for(auto [nod, cnt] : dp[i][j - 1]) {
-                    int hnod = __gcd(nod, d2[i][j]);
-                    hdp[hnod] = (hdp[hnod] + cnt) % mod;
-                }
+            for(auto [nod, cnt] : dp[i][j - 1]) {
+                int hnod = __gcd(1LL * nod * d2[i][j], 1LL * k);
+                dp[i][j][hnod] = (dp[i][j][hnod] + cnt) % mod;
             }
-            if(!hdp.empty()) dp[i][j] = hdp;
         }
     }
     cout << dp[n][n][k];
